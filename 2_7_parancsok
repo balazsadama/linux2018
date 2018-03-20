@@ -1,0 +1,167 @@
+﻿2. laborfeladat - 2017
+Balazs Adam Attila
+baam0146
+
+7. Feladat 
+
+
+A) 
+
+Hozza létre a következő katalógusszerkezetet, majd listázza azt. 
+
+
+katonak
+      |
+      |- hadsereg
+                |
+                |- ezred
+                |- szazad
+                |- osztag
+                |- kulonitmeny
+[baam0146@localhost labor2]$ mkdir -p katonak/hadsereg/ezred
+[baam0146@localhost labor2]$ cd katonak/hadsereg/
+[baam0146@localhost hadsereg]$ mkdir szazad osztag kulonitmeny
+[baam0146@localhost hadsereg]$ tree ~/labor2/katonak/
+/home/baam0146/labor2/katonak/
+└── hadsereg
+    ├── ezred
+    ├── kulonitmeny
+    ├── osztag
+    └── szazad
+
+5 directories, 0 files
+[baam0146@localhost hadsereg]$ 
+
+
+Hozza létre a következő szöveges állományokat: 
+
+katonak/hadsereg/rangok 
+[baam0146@localhost labor2]$ cat >katonak/hadsereg/rangok
+[baam0146@localhost labor2]$ 
+
+katonak/hadsereg/ezred/parancsnok 
+[baam0146@localhost labor2]$ cat >katonak/hadsereg/rangok
+[baam0146@localhost labor2]$ 
+
+katonak/hadsereg/osztag/nevsor 
+[baam0146@localhost labor2]$ cat >katonak/hadsereg/rangok
+[baam0146@localhost labor2]$ 
+
+
+A rangok szöveges állományba soroljon fel legalább három tiszti és egy altiszti rangot. 
+[baam0146@localhost labor2]$ cat >katonak/hadsereg/rangok
+hadnagy
+fohadnagy
+szazados
+ornagy
+alezredes
+ezredes
+ormester
+torzsormester
+fotorzsormester
+[baam0146@localhost labor2]$ 
+
+A parancsnok file-ba adja meg egy a történelemből közismert ezredes nevét. 
+[baam0146@localhost labor2]$ cat >katonak/hadsereg/ezred/parancsnok
+Beniczky Lajos
+[baam0146@localhost labor2]$ 
+
+A nevsor szöveges állományba írjon be 7 nevet külön sorokba. 
+[baam0146@localhost labor2]$ cat >katonak/hadsereg/osztag/nevsor
+Benedek Geza
+Dobay Dezso
+Hajdu Gabor
+Irsay Istvan
+Kajtar Gyula
+Kulik Istvan
+Nagyidai Peter
+[baam0146@localhost labor2]$ 
+
+Végezze el a következő áthelyezéseket: 
+
+a katonak/hadsereg/osztag katalógust helyezze át a katonak/hadsereg/szazad katalógusba 
+[baam0146@localhost labor2]$ mv -t katonak/hadsereg/szazad katonak/hadsereg/osztag
+[baam0146@localhost labor2]$ 
+
+a katonak/hadsereg/kulonitmeny katalógust helyezze át a katonak/hadsereg/szazad katalógusba 
+[baam0146@localhost labor2]$ mv -t katonak/hadsereg/szazad katonak/hadsereg/kulonitmeny/
+[baam0146@localhost labor2]$ 
+
+a katonak/hadsereg/szazad katalógust helyezze át a katonak/hadsereg/ezred katalógusba 
+[baam0146@localhost labor2]$ mv -t katonak/hadsereg/ezred katonak/hadsereg/szazad/
+[baam0146@localhost labor2]$ 
+
+
+A katonak/hadsereg/ezred/szazad/osztag/nevsor szöveges állományról készítsen másolatot a katonak/hadsereg katalógusba. 
+[baam0146@localhost labor2]$ cp katonak/hadsereg/ezred/szazad/osztag/nevsor katonak/hadsereg/
+[baam0146@localhost labor2]$ 
+
+A katonak/hadsereg/nevsor file-ra készítsen linket a katonak katalógusba. 
+[baam0146@localhost labor2]$ ln -sT /home/baam0146/labor2/katonak/hadsereg/nevsor katonak/nevsor_link
+
+Az előbbiekben elkészített linket felhasználva adjon hozzá még egy nevet a nevsor állomány utolsó sorába. 
+[baam0146@localhost labor2]$ cat >>katonak/nevsor_link 
+Nagy Elek
+[baam0146@localhost labor2]$ 
+
+Törölje a katonak/hadsereg/ezred/szazad/kulonitmeny katalógust. 
+[baam0146@localhost labor2]$ rmdir katonak/hadsereg/ezred/szazad/kulonitmeny/
+[baam0146@localhost labor2]$ 
+
+Határozza meg a katonak/hadsereg/nevsor és a katonak/hadsereg/ezred/szazad/osztag/nevsor file-ok első különböző sorát és első különböző bájtját. 
+??????????????????????????????????????????????????????????????????????????????????????????
+Listázza a képernyőre a katonak/hadsereg/rangok file első 3 sorát. 
+[baam0146@localhost labor2]$ head katonak/hadsereg/rangok -n 3
+hadnagy
+fohadnagy
+szazados
+[baam0146@localhost labor2]$ 
+
+Kerestesse meg a katonak katalógusban és alkatalógusaiban szereplő file-ok közül azokat, amelyek nevének második betűje a (a katalógusokat ne). 
+[baam0146@localhost labor2]$ find katonak/ -name '?a*' -type f
+katonak/hadsereg/ezred/parancsnok
+katonak/hadsereg/rangok
+[baam0146@localhost labor2]$ 
+
+Listázza ABC-szerint rendezve a katonak/hadsereg/nevsor file sorait. 
+[baam0146@localhost labor2]$ sort katonak/hadsereg/nevsor 
+Benedek Geza
+Dobay Dezso
+Hajdu Gabor
+Irsay Istvan
+Kajtar Gyula
+Kulik Istvan
+Nagy Elek
+Nagyidai Peter
+[baam0146@localhost labor2]$ 
+
+Számoltassa meg a katonak/hadsereg/nevsor file-ban szereplő szavakat, majd számoltassa meg ugyanebben az állományban levő betűket. 
+[baam0146@localhost labor2]$ wc -w katonak/hadsereg/nevsor 
+16 katonak/hadsereg/nevsor
+[baam0146@localhost labor2]$ wc -m katonak/hadsereg/nevsor 
+101 katonak/hadsereg/nevsor
+[baam0146@localhost labor2]$ 
+
+
+
+B) 
+
+Listázza ki azokat a felhasználókat akik be vannak jelentkezve és az általuk futtatott folyamatokat (a laborban megoldandó). 
+
+Listázza ki a múlt héten bejelentkezett felhasználók közül az utolsó 10 adatait (a laborban megoldandó). 
+
+Törölje le a képernyő tartalmát. 
+
+Listázza ki a gazdagép (host) hosszú nevét. 
+
+Vizsgálja meg, hogy elérhető-e a zeus.ubbcluj.ro szerver. Csak 3 elérési próbálkozást engedélyezzen. 
+
+Határozza meg a www.ubbcluj.ro szerver IP címét. 
+
+Listázza ki a rendszeridőt, 24 órás megjelenítésben a következő példának megfelelően: 
+Pl. 16 ora 42 perc 23 masodperc 
+Megjegyzés: A formátum megadását idézőjelek közé kell írni, különben a szóközök miatt nem egy paraméternek fogja értelmezni. 
+
+Írassa ki, hogy mióta fut a rendszer. 
+
+Írassa ki a MAIL környezeti változó értékét.
