@@ -1,4 +1,4 @@
-﻿2. laborfeladat - 2017
+﻿2. laborfeladat - 2018
 Balazs Adam Attila
 baam0146
 
@@ -109,7 +109,10 @@ Törölje a katonak/hadsereg/ezred/szazad/kulonitmeny katalógust.
 [baam0146@localhost labor2]$ 
 
 Határozza meg a katonak/hadsereg/nevsor és a katonak/hadsereg/ezred/szazad/osztag/nevsor file-ok első különböző sorát és első különböző bájtját. 
-??????????????????????????????????????????????????????????????????????????????????????????
+[baam0146@localhost labor2]$ cmp katonak/hadsereg/nevsor katonak/hadsereg/ezred/szazad/osztag/nevsor 
+katonak/hadsereg/nevsor katonak/hadsereg/ezred/szazad/osztag/nevsor differ: byte 92, line 8
+[baam0146@localhost labor2]$ 
+
 Listázza a képernyőre a katonak/hadsereg/rangok file első 3 sorát. 
 [baam0146@localhost labor2]$ head katonak/hadsereg/rangok -n 3
 hadnagy
@@ -147,21 +150,94 @@ Számoltassa meg a katonak/hadsereg/nevsor file-ban szereplő szavakat, majd sz�
 B) 
 
 Listázza ki azokat a felhasználókat akik be vannak jelentkezve és az általuk futtatott folyamatokat (a laborban megoldandó). 
+[baam0146@linux labor2]$ w
+ 08:26:32 up 6 days,  7:20, 15 users,  load average: 6.96, 7.03, 7.06
+USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT
+gair2431 pts/0    172.30.112.96    08:01    1.00s  0.08s  0.08s -bash
+bnam0154 pts/2    82.208.133.143   08:03    3.00s  0.13s  0.13s -bash
+pvir2369 pts/4    172.30.115.154   08:03    4.00s  0.19s  0.06s vim f.awk
+piir2373 pts/5    172.30.118.29    08:04   22:08   0.03s  0.03s -bash
+heir2432 pts/6    172.30.113.134   08:04    1:06   0.09s  0.09s -bash
+miam0171 pts/7    82.208.133.143   08:18    2:55   0.16s  0.13s vim 2_2_p
+pair2378 pts/8    172.30.116.83    08:05    0.00s  0.18s  0.05s vim f.awk
+bzam0147 pts/9    82.208.133.143   08:12   27.00s  0.21s  0.16s vim 2_8_p
+piir2373 pts/10   172.30.118.29    08:13    7.00s  0.15s  0.09s vim file.
+pair2371 pts/11   172.30.112.112   08:18    1.00s  0.14s  0.08s vim scrip
+miam0171 pts/12   82.208.133.143   08:18    7:46   0.03s  0.03s -bash
+bzam0147 pts/13   82.208.133.143   08:19    0.00s  0.08s  0.08s -bash
+baam0146 pts/14   82.208.133.143   08:20    6:17   0.02s  0.02s -bash
+baam0146 pts/15   82.208.133.143   08:21    0.00s  0.09s  0.05s w
+miam0171 pts/16   82.208.133.143   08:23   31.00s  0.08s  0.05s vim 2_2_p
+[baam0146@linux labor2]$ 
+
 
 Listázza ki a múlt héten bejelentkezett felhasználók közül az utolsó 10 adatait (a laborban megoldandó). 
+[baam0146@linux labor2]$ last -t 20180318235959 -n 10
+popb     pts/0        nessie.cs.ubbclu Sun Mar 18 20:20 - 22:03  (01:42)    
+bdam0151 pts/1        172.30.115.230   Sun Mar 18 15:30 - 15:45  (00:14)    
+bdam0151 pts/0        172.30.115.230   Sun Mar 18 15:29 - 18:08  (02:39)    
+bdam0151 pts/2        172.30.115.230   Sun Mar 18 14:16 - 15:28  (01:12)    
+bdam0151 pts/1        172.30.115.230   Sun Mar 18 14:16 - 15:28  (01:12)    
+bdam0151 pts/0        172.30.115.230   Sun Mar 18 14:15 - 15:28  (01:12)    
+popb     pts/0        nessie.cs.ubbclu Sun Mar 18 12:04 - 12:43  (00:38)    
+bufny    pts/0        nessie.cs.ubbclu Sun Mar 18 01:30 - 03:12  (01:42)    
+bufny    pts/0        nessie.cs.ubbclu Sat Mar 17 23:44 - 23:44  (00:00)    
+bufny    pts/0        nessie.cs.ubbclu Sat Mar 17 19:11 - 19:20  (00:08)    
 
-Törölje le a képernyő tartalmát. 
+wtmp begins Fri Mar  2 23:23:07 2018
+[baam0146@linux labor2]$ 
+
+
+Törölje le a képernyő tartalmát.
+[baam0146@linux labor2]$ clear
+
+[baam0146@linux labor2]$ 
+ 
 
 Listázza ki a gazdagép (host) hosszú nevét. 
+[baam0146@linux labor2]$ hostname
+linux.scs.ubbcluj.ro
+[baam0146@linux labor2]$ 
 
 Vizsgálja meg, hogy elérhető-e a zeus.ubbcluj.ro szerver. Csak 3 elérési próbálkozást engedélyezzen. 
+[baam0146@linux labor2]$ ping -c 3 zeus.ubbcluj.ro
+PING zeus.ubbcluj.ro (193.231.20.1) 56(84) bytes of data.
+64 bytes from ns.UBBCluj.Ro (193.231.20.1): icmp_seq=1 ttl=62 time=1.25 ms
+64 bytes from ns.UBBCluj.Ro (193.231.20.1): icmp_seq=2 ttl=62 time=0.472 ms
+64 bytes from ns.UBBCluj.Ro (193.231.20.1): icmp_seq=3 ttl=62 time=1.00 ms
+
+--- zeus.ubbcluj.ro ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2001ms
+rtt min/avg/max/mdev = 0.472/0.910/1.256/0.326 ms
+[baam0146@linux labor2]$ 
 
 Határozza meg a www.ubbcluj.ro szerver IP címét. 
+[baam0146@linux labor2]$ nslookup www.ubbcluj.ro
+Server:		172.30.0.14
+Address:	172.30.0.14#53
+
+Non-authoritative answer:
+www.ubbcluj.ro	canonical name = ubbcluj.ro.
+Name:	ubbcluj.ro
+Address: 193.231.20.15
+
+[baam0146@linux labor2]$ 
 
 Listázza ki a rendszeridőt, 24 órás megjelenítésben a következő példának megfelelően: 
 Pl. 16 ora 42 perc 23 masodperc 
 Megjegyzés: A formátum megadását idézőjelek közé kell írni, különben a szóközök miatt nem egy paraméternek fogja értelmezni. 
+[baam0146@linux labor2]$ date +"%H ora %M perc %S masodperc"
+08 ora 59 perc 04 masodperc
+[baam0146@linux labor2]$ 
 
 Írassa ki, hogy mióta fut a rendszer. 
+[baam0146@linux labor2]$ uptime
+ 08:59:23 up 6 days,  7:53, 16 users,  load average: 46.88, 45.59, 30.88
+[baam0146@linux labor2]$ 
+
 
 Írassa ki a MAIL környezeti változó értékét.
+[baam0146@linux labor2]$ echo $MAIL
+/var/spool/mail/baam0146
+[baam0146@linux labor2]$ 
+
