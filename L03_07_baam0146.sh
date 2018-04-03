@@ -14,13 +14,33 @@ then
 	exit 1
 fi
 
+max=-1
+count=0
 for param in $*
 do
 	id -u $param &> /dev/null
 	if [ $? -eq 0 ]
 	then
-		echo $param ': ' `ps -u $param |wc -l`
+		processes=`ps -u $param |wc -l`
+		echo $param ': ' $processes
+		if [ $processes -gt $max ]
+		then
+			max=$processes
+			count=1
+			users[0]=$param
+		elif [ $processes -eq $max ]
+		then
+			users[$count]=$param
+			count=$count+1
+		fi
 	else
 		echo "No such username as $param"
 	fi
+done
+
+echo 'Users with most processes: '
+for i in "${users[@]}"
+do
+	echo "${users[$i]} is running:"
+        ps -o "comm" -u $i | sort -u
 done
