@@ -13,10 +13,11 @@ fi
 
 if [ -d $1 ]
 then
-	find $1 -type f
-	files=($(find $1 -type f))
-	for f in $(find $1 -type f) do
-		#echo $f
+	#find $1 -type f
+	files=`find $1 -type f`
+	for f in $files
+	do
+		grep '^[0-9]\|^\.' $f
 	done
 
 #	echo $1
