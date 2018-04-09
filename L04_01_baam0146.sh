@@ -13,19 +13,14 @@ fi
 
 if [ -d $1 ]
 then
-	#find $1 -type f
-	files=`find $1 -type f`
-	for f in $files
-	do
-		grep '^[0-9]\|^\.' $f
-	done
-
-#	echo $1
-#	for d in ~/labor4_grep/level1/*; do
-#		if [ -f "$d" ] then
-#			echo "$d"
-#		fi
+#	files=`find $1 -type f`
+#	for f in $files
+#	do
+#		grep '^[0-9]\|^\.' $f
 #	done
+
+	grep '^[0-9]\|^\.' -Rh $1
+
 else
 	echo 'Invalid directory given.'
 fi
