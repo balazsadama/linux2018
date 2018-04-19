@@ -1,3 +1,14 @@
+# Balazs Adam-Attila
+# baam0146
+# Írjunk shell scriptet, mely egy n számot és szöveges állományokat kap paraméterként. 
+# Ellenőrizzük a paraméterek helyességét, majd a paraméterként megadott állományokból
+# szűrjük ki azokat a (0x-el kezdődő) hexa számokat, melyek pontosan n byte méretű, előjel
+# nélküli egész számot ábrázolnak. 
+# A kiszűrt számokat írjuk a képernyőre, és azokat, amelyek kizárólag csak A-F hexa számjegyeket 
+# tartalmaznak, írjuk bele egy hex-bin nevű állományba úgy, hogy a hexa kódot egy "*" karakter, 
+# majd a hexa számnak megfelelő bináris szám követi (az átalakítást végezzük sed-el).
+
+
 if [ $# -lt 2 ]
 then
         echo '1.Number n 2.File 3.File ...'
@@ -16,18 +27,13 @@ for param in $*
 do
 	if [ ! -f $param ]
 	then
-		echo "$param is not a valid file"
+		echo "Warning: $param is not a valid file"
 	fi
 done
 
 n=$(($n * 2))
-n=$(($n - 1))
 for param in $*
 do
-	grep -Eoi "^0x[0-9a-e][0-9a-f]{$n}\b" $param
-#	grep -Eoi "^0x[a-e][a-f]{$n}\b" $param | sed 's/abcdef//gI' > hex-bin
-#	grep -Eoi "^0x[a-e][a-f]{$n}\b" $param | sed 's/a/1010/g;s/b/1011/g;s/c/1100/g;s/d/1101/g;s/e/1110/g;s/f/1111/g' >> hex-bin
-
-
-	grep -Eoi "^0x[a-e][a-f]{$n}\b" $param | sed 's/[aA]/1010 /g;s/[bB]/1011 /g;s/[cC]/1100 /g;s/[dD]/1101 /g;s/[eE]/1110 /g;s/[fF]/1111 /g;s/0x/*/g' >>hex-bin
+	grep -Eoi "^0x[0-9a-f]{$n}\b" $param
+	grep -Eoi "^0x[a-f]{$n}\b" $param | sed 's/[aA]/1010 /g;s/[bB]/1011 /g;s/[cC]/1100 /g;s/[dD]/1101 /g;s/[eE]/1110 /g;s/[fF]/1111 /g;s/0x/*/g' >>hex-bin
 done
