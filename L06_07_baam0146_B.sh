@@ -16,10 +16,19 @@ fi
 #    Print full login and logout times and dates.
 
 # $4 is the day of the week
-last -F | awk '
+last -F | awk -v max="Mon" '
 {
-days[$4]++;
-}
-END { for (var in days) print var, " ", days[var] }
 
+if ($4 ~ /[A-Z][a-z][a-z]/ )	
+	days[$4]++;
+}
+END { 
+max
+for (var in days) {
+	print var, " ", days[var]
+	if ( days[var] > days[max] )
+		max=var
+}
+print "Most logins were on " max " with " days[max] " logins"
+}
 '
