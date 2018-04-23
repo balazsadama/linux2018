@@ -28,12 +28,12 @@ BEGIN { print strftime("%Y-%m-%d %H:%M:%S") > "tantargy_log" }
 {
 if ($4 > 4.5) {
 	szoveg="Kedves "$1" "$2"!\nA(z) "tantargy" vizsgan elert osztalyzata: "$4
-	print szoveg
+	system("echo \""szoveg"\"|mail -s \"Vizsga\" " $3)
 	print szoveg > "tantargy_log"
 }
 else {
 	szoveg="Kedves "$1" "$2"!\nJojjon legkozelebb a(z) "tantargy" tantargybol vizsgazni."
-	print szoveg
+	system("echo \""szoveg"\"|mail -s \"Vizsga\" " $3)
 	print szoveg > "tantargy_log"
 }
 }' $2

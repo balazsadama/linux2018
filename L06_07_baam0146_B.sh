@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # nev: Balazs Adam-Attila
 # felhasznalo: baam0146
 # feladat: Asszociatív tömb segítségével határozzuk meg, hogy az elmúlt
@@ -12,10 +14,6 @@ then
         exit 1
 fi
 
-#-F, --fulltimes
-#    Print full login and logout times and dates.
-
-# $4 is the day of the week
 last -F | awk -v max="Mon" '
 {
 
