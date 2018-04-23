@@ -27,11 +27,13 @@ awk -v tantargy=$1 '
 BEGIN { print strftime("%Y-%m-%d %H:%M:%S") > "tantargy_log" }
 {
 if ($4 > 4.5) {
-	print "Kedves " $1 " " $2 "!" > "tantargy_log"
-	print "A(z) " tantargy " vizsgan elert osztalyzata: " $4 > "tantargy_log"
+	szoveg="Kedves "$1" "$2"!\nA(z) "tantargy" vizsgan elert osztalyzata: "$4
+	print szoveg
+	print szoveg > "tantargy_log"
 }
 else {
-	print "Kedves " $1 " " $2 "!" > "tantargy_log"
-	print "Jojjon legkozelebb a(z) " tantargy " tantargybol vizsgazni." > "tantargy_log"
+	szoveg="Kedves "$1" "$2"!\nJojjon legkozelebb a(z) "tantargy" tantargybol vizsgazni."
+	print szoveg
+	print szoveg > "tantargy_log"
 }
 }' $2
