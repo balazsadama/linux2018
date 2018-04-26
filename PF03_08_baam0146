@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Balazs Adam-Attila
+# baam0146
+# 
+
 awk -v skipnext=0 '{
 
 string=""
@@ -22,15 +26,9 @@ else if (skipnext == 1) {
 }
 else {
 	for (i = NF; i > 0; i=i-1) {
-		string = $i FS
+		string = string FS $i
 	}
 
-        for (i = 1; i <= NF-1; i=i+2) {
-                string = string FS $(i+1) FS $i
-        }
-        if (NF % 2 == 1){
-                string = string FS $NF
-        }
         skipnext = 0
 	print string
 }
