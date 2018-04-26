@@ -1,0 +1,14 @@
+#!/bin/bash
+
+awk '{
+
+for (i = 1; i <= NF-1; i=i+2) {
+	print $(i + 1) " " $i
+}
+
+if (NF % 2 == 1){
+	print $NF
+}
+
+}
+' allomany
