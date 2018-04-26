@@ -2,7 +2,13 @@
 
 # Balazs Adam-Attila
 # baam0146
-# 
+# Írjunk "awk"-t meghívó shell scriptet, mely a kodolt nevű "kódolt"
+# állomány sorait a következő szabály szerint dolgozza fel:
+# - a "+" jellel kezdődő sorokban páronként felcseréli a szavak
+# sorrendjét (a "+" jelet elhagyva)
+# - a "+" jellel jelölt sorok után következő sort (ha az nincs szintén
+# megjelölve)  változatlanul hagyja
+# - az összes többi sorban megfordítja a szavak sorrendjét
 
 awk -v skipnext=0 '{
 
@@ -35,4 +41,4 @@ else {
 
 
 }
-' $1
+' kodolt
