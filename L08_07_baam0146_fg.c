@@ -1,9 +1,8 @@
 /* nev: Balazs Adam-Attila
    felhasznalo: baam0146
-   feladat: Adott az x1, x2, ..., xn számsorozat. A divide et impera módszert alkalmazva rendezzük a sorozatot: a folyamat a számsorozatot
-   két részre osztja, amelyeket két gyerekfolyamatának ad át, hogy rendezzék, a visszakapott eredményeket pedig összefésüli. A gyerekfolyamatok
-   ugyanezt a módszert alkalmazzák. (Mivel korlátozott az elindítható folyamatok száma, csak kevés számra fog működni.) n-et és a
-   sorozat elemeit az „input.dat” állományból olvassuk be. */
+   feladat: Írjunk egy „tavolsag(x,y,n)” függvényt, amelyik kiszámítja az x = (xi) és y = (yi), i = 1, ..., n vektorok euklideszi távolságát
+   (a vektorok azonos rangú elemei különbsége négyzetösszegének a négyzetgyöke). Ezt a függvényt használjuk 2 vektor távolságának kiszámítására.
+   A vektorokat az „input.dat” file-ból olvassuk be, az eredményt pedig, a bemenő adatokkal együtt az „output.dat” file-ba írjuk. */
 
 #include "tavolsag.h"
 #include <math.h>
