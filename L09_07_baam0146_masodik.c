@@ -35,7 +35,7 @@ void merge(int* x, int a, int b, int c){
 
 void mergeSort(int *x, int a, int b){
 	pid_t child1 = -1, child2 = -1, root = -1;
-	int k, unsorted = 1;
+	int i, k, unsorted = 1;
 	int pfdL[2], nL, pfdR[2], nR;
 	char buf[MAXLINE];
 
@@ -47,46 +47,79 @@ void mergeSort(int *x, int a, int b){
 	root = fork();
 
 	if (root == 0) {
+	while (1) {
 		// we create 2 child processes to sort left and right part of array
+		k = a + (b - a) / 2;
 		child1 = fork();
 
 		if (child1 == 0) { // if child, then sort left
-			/*nL = read(pfdL[0], buf, MAXLINE);
-			printf("%d child read ", getpid());
-			fflush(stdout);
-			write(1, buf, nL);
-			write(1, "\n", 1);
-			write(pfdL[1], "69", 2);*/
-
 			read(pfdL[0], &nL, sizeof(nL));
-			int i, x;
+			int *left = (int*)malloc(nL * sizeof(int));
+			printf("left received: ");
 			for (i = 0; i < nL; i++) {
-				read(pfdL[0], &x, sizeof(x));
-				printf("%d ", x);
+				read(pfdL[0], left + i, sizeof(i));
+				printf("%d ", left[i]);
+			}
+			if (nL == 1) {
+				write(pfdL[1], left, sizeof(left[0]));
+				free(left);
+				printf("\n\n%d\n\n", left[0]);
+				exit(0);
+			}
+			else {
+				b = k;
+				//free(left);
 			}
 		}
 		else { 
 			
-			
-			
-			// else send input to child
-			/*
-			char test[] = "sending this from parent";
-			write(pfdL[1], test, sizeof(test));
-			wait(NULL);
-			nL = read(pfdL[0], buf, MAXLINE);
-			printf("%d parent read ", getpid());
-			fflush(stdout);
-			write(1, buf, nL);
-			write(1, "\n", 1); */
+			child2 = fork();
 
-			int i = 7;
-			write(pfdL[1], &i, sizeof(i));
-			for (i = 0; i < 7; i++) {
-				write(pfdL[1], &i, sizeof(i));
+			if (child2 == 0) {
+				read(pfdR[0], &nR, sizeof(nR));
+				int *right = (int*)malloc(nR * sizeof(int));
+				printf("%d right received: ", getpid());
+				for (i = 0; i < nR; i++) {
+					read(pfdR[0], right + i, sizeof(i));
+					printf("%d ", right[i]);
+				}
+				if (nR == 1) {
+					write(pfdR[1], right, sizeof(right[0]));
+					free(right);
+					printf("\n\n%d\n\n", right[0]);
+					exit(0);
+				}
+				else {
+					a = k + 1;
+					printf("a = %d\n", a);
+					//free(right);
+				}
+			}
+
+			else {
+				// send info to both children, then merge it together
+				k = a + (b - a) / 2;
+			
+				nL = k - a + 1;
+				write(pfdL[1], &nL, sizeof(nL));
+				for (i = a; i <= k; i++) {
+					write(pfdL[1], x + i, sizeof(x[i]));
+				}
+			
+				nR = b - k;
+				write(pfdR[1], &nR, sizeof(nR));
+				for (i = k + 1; i <= b; i++) {
+					write(pfdR[1], x + i, sizeof(x[i]));
+				}
+
+				wait(NULL);
+				wait(NULL);
+				merge(x, a, k, b);
+				
 			}
 		}
-		exit(0);
+		//exit(0);
+	}
 	}
 	else {
 		close(pfdL[0]);
@@ -95,8 +128,6 @@ void mergeSort(int *x, int a, int b){
 		close(pfdR[1]);
 		// wait for the array to be sorted, then print
 		wait(NULL);
-		for (int i = a; i < b; i++)
-	                printf("%d ", x[i]);
 		exit(1);
 	}
 }
@@ -104,12 +135,12 @@ void mergeSort(int *x, int a, int b){
 
 int main(void){
 //	int t[6] = {1, 3, 5, 2, 4, 6};
-	int t[5] = {1, 5, 3, 4, 2};
+	int t[6] = {1, 5, 3, 4, 2, 7};
 
 /*	for (int i = 0; i < 5; i++) 
 		printf("%d ", t[i]);
 */
-	mergeSort(t, 0, 4);
+	mergeSort(t, 0, 5);
 
 	/*
 	printf("\n");
