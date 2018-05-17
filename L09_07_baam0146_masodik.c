@@ -35,35 +35,39 @@ void merge(int* x, int a, int b, int c){
 
 void mergeSort(int *x, int a, int b){
 	pid_t child1 = -1, child2 = -1, root = -1;
-	int i, k, unsorted = 1;
-	int pfdL[2], nL, pfdR[2], nR;
+	int i, k, iterator = 0;
+	int pfdL[2], nL, pfdR[2],, pfdP[2], nR;
 	char buf[MAXLINE];
 
 	// open pipe for left child
-	pipe(pfdL);
+//	pipe(pfdL);
 	// open pipe for right child
-	pipe(pfdR);
+//	pipe(pfdR);
 
+	pipe(pfdP);
 	root = fork();
 
 	if (root == 0) {
-	while (1) {
+	while (iterator < 10) {
 		// we create 2 child processes to sort left and right part of array
 		k = a + (b - a) / 2;
+		pipe(pfdL);
 		child1 = fork();
 
-		if (child1 == 0) { // if child, then sort left
+		if (child1 == 0) { // sort left
 			read(pfdL[0], &nL, sizeof(nL));
 			int *left = (int*)malloc(nL * sizeof(int));
-			printf("left received: ");
+			//printf("%dparent %dchild left received: nL=%d\t", getppid(), getpid(), nL);
 			for (i = 0; i < nL; i++) {
 				read(pfdL[0], left + i, sizeof(i));
-				printf("%d ", left[i]);
+			//	printf("%d ", left[i]);
 			}
+			printf("\n");
 			if (nL == 1) {
 				write(pfdL[1], left, sizeof(left[0]));
+				printf("%dparent %dchild exited %d\n", getppid(), getpid(), left[0]);
 				free(left);
-				printf("\n\n%d\n\n", left[0]);
+			//	printf("\n\n%d\n\n", left[0]);
 				exit(0);
 			}
 			else {
@@ -73,25 +77,27 @@ void mergeSort(int *x, int a, int b){
 		}
 		else { 
 			
+			pipe(pfdR);
 			child2 = fork();
 
-			if (child2 == 0) {
+			if (child2 == 0) { // sort right
 				read(pfdR[0], &nR, sizeof(nR));
 				int *right = (int*)malloc(nR * sizeof(int));
-				printf("%d right received: ", getpid());
+				//printf("%dparent %dchild right received: nR=%d\t", getppid(), getppid(), nR);
 				for (i = 0; i < nR; i++) {
 					read(pfdR[0], right + i, sizeof(i));
-					printf("%d ", right[i]);
+				//	printf("%d ", right[i]);
 				}
+				//printf("\n");
 				if (nR == 1) {
 					write(pfdR[1], right, sizeof(right[0]));
+					printf("%dparent %dchild exited %d\n", getppid(), getpid(), right[0]);
 					free(right);
-					printf("\n\n%d\n\n", right[0]);
+					//printf("\n\n%d\n\n", right[0]);
 					exit(0);
 				}
 				else {
 					a = k + 1;
-					printf("a = %d\n", a);
 					//free(right);
 				}
 			}
@@ -99,26 +105,62 @@ void mergeSort(int *x, int a, int b){
 			else {
 				// send info to both children, then merge it together
 				k = a + (b - a) / 2;
-			
+
+				if (a > b)
+					break;
+
+				//printf("%d %d %d %d ", getpid(), a, b, k);
+//				getchar();
+//
 				nL = k - a + 1;
+				//printf("sending left nL=%d ", nL);
 				write(pfdL[1], &nL, sizeof(nL));
 				for (i = a; i <= k; i++) {
 					write(pfdL[1], x + i, sizeof(x[i]));
+				//	printf("x[%d]=%d ", i, x[i]);
 				}
 			
 				nR = b - k;
+				//printf(" sending right nR=%d ", nR);
 				write(pfdR[1], &nR, sizeof(nR));
 				for (i = k + 1; i <= b; i++) {
 					write(pfdR[1], x + i, sizeof(x[i]));
+				//	printf("x[%d]=%d ", i, x[i]);
 				}
+				//printf("\n");
 
 				wait(NULL);
-				wait(NULL);
+//				wait(NULL);
+
+				// most kiolvasom a gyerekek altal kuldott adatokat
+				int m, temp;
+				printf("%dparent read from left\t", getpid());
+				for (m = a; m <= k; m++) {
+					read(pfdL[0], &temp, sizeof(temp));
+					x[m] = temp;
+					printf("x[%d]=%d ", m, temp);
+				}
+				printf("\tfrom right:\t");
+				for (m = k + 1; m <= b; m++) {
+					read(pfdR[0], &temp, sizeof(temp));
+					x[m] = temp;
+					printf("x[%d]=%d ", m, temp);
+				}
+				printf("\n");
+
+				for (m = a; m <= b; m++) 
+					printf("x[%d]=%d ", m, x[m]);
 				merge(x, a, k, b);
+				for (m = a; m <= b; m++) {
+					printf("x[%d]=%d ", m, x[m]);
+				}
+				printf("\n");
+				exit(0);
 				
 			}
 		}
 		//exit(0);
+		iterator++;
 	}
 	}
 	else {
@@ -128,6 +170,11 @@ void mergeSort(int *x, int a, int b){
 		close(pfdR[1]);
 		// wait for the array to be sorted, then print
 		wait(NULL);
+		int m;
+		for (m = a; m <= b; m++){
+			//printf("%d ", x[m]);
+		}
+		printf("\n");
 		exit(1);
 	}
 }
