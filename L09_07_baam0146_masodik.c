@@ -36,21 +36,17 @@ void merge(int* x, int a, int b, int c){
 void mergeSort(int *x, int a, int b){
 	pid_t child1 = -1, child2 = -1, root = -1;
 	int i, k, iterator = 0;
-	int pfdL[2], nL, pfdR[2],, pfdP[2], nR;
+	int pfdL[2], nL, pfdR[2], pfdP[2], nR;
 	char buf[MAXLINE];
 
-	// open pipe for left child
-//	pipe(pfdL);
-	// open pipe for right child
-//	pipe(pfdR);
-
-	pipe(pfdP);
 	root = fork();
 
 	if (root == 0) {
 	while (iterator < 10) {
 		// we create 2 child processes to sort left and right part of array
 		k = a + (b - a) / 2;
+
+
 		pipe(pfdL);
 		child1 = fork();
 
@@ -62,7 +58,7 @@ void mergeSort(int *x, int a, int b){
 				read(pfdL[0], left + i, sizeof(i));
 			//	printf("%d ", left[i]);
 			}
-			printf("\n");
+			//printf("\n");
 			if (nL == 1) {
 				write(pfdL[1], left, sizeof(left[0]));
 				printf("%dparent %dchild exited %d\n", getppid(), getpid(), left[0]);
@@ -72,7 +68,9 @@ void mergeSort(int *x, int a, int b){
 			}
 			else {
 				b = k;
-				//free(left);
+				// CHANGED HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEee
+				pfdP[0] = pfdL[0];
+				pfdP[1] = pfdL[1];
 			}
 		}
 		else { 
@@ -98,7 +96,9 @@ void mergeSort(int *x, int a, int b){
 				}
 				else {
 					a = k + 1;
-					//free(right);
+					// AND HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+					pfdP[0] = pfdR[0];
+					pfdP[1] = pfdR[1];
 				}
 			}
 
@@ -110,8 +110,6 @@ void mergeSort(int *x, int a, int b){
 					break;
 
 				//printf("%d %d %d %d ", getpid(), a, b, k);
-//				getchar();
-//
 				nL = k - a + 1;
 				//printf("sending left nL=%d ", nL);
 				write(pfdL[1], &nL, sizeof(nL));
@@ -155,11 +153,16 @@ void mergeSort(int *x, int a, int b){
 					printf("x[%d]=%d ", m, x[m]);
 				}
 				printf("\n");
+
+				// EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+				for (m = a; m <= b; m++) {
+					write(pfdP[1], x + m, sizeof(x[m]));
+				}
+
 				exit(0);
 				
 			}
 		}
-		//exit(0);
 		iterator++;
 	}
 	}
@@ -170,9 +173,13 @@ void mergeSort(int *x, int a, int b){
 		close(pfdR[1]);
 		// wait for the array to be sorted, then print
 		wait(NULL);
+
+
+
+		printf("\n\n\n\n");
 		int m;
 		for (m = a; m <= b; m++){
-			//printf("%d ", x[m]);
+			printf("%d ", x[m]);
 		}
 		printf("\n");
 		exit(1);
