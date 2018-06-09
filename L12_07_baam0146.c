@@ -39,8 +39,10 @@ int main(int argc, char **argv) {
 			fprintf(stderr, "%d: error when trying to lock\n", getpid());
 			exit(1);
 		}
+		printf("%d: locked the row %d\n", getpid(), k);
+
 		// process the row
-		lseek(fd, (-1) * n * sizeof(int), SEEK_CUR);
+		sum = 0;
 		for (i = 0; i < n; i++) {
 			if (read(fd, &x, sizeof(x)) < 0) {
                                 fprintf(stderr, "%d: error reading from fd\n", getpid());
@@ -69,6 +71,7 @@ int main(int argc, char **argv) {
                         fprintf(stderr, "%d: error when trying to unlock\n", getpid());
                         exit(1);
                 }
+		printf("%d: unlocked the row %d\n", getpid(), k);
 	}
 	else {
 		// decide what column to process
@@ -87,6 +90,7 @@ int main(int argc, char **argv) {
         	printf("%d: locked the column %d\n", getpid(), k);
 
 		// process the column
+		sum = 0;
 		for (i = 0; i < n; i++) {
 	                lseek(fd, sizeof(int) + i * n * sizeof(int) + k * sizeof(int), SEEK_SET);
 	                if (read(fd, &x, sizeof(x)) < 0) {
