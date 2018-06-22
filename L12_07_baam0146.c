@@ -1,3 +1,12 @@
+/* nev: Balazs Adam-Attila
+   felhasznalo: baam0146
+   feladat: Írjunk olyan programot, amely egy n2 db. egész számot tartalmazó állománnyal dolgozik. Az állomány bejegyzései egy n elemű M
+   négyzetes mátrix elemei. Egy program ismételten kiszámolja egy sor vagy egy oszlop elemeinek összegét (a sor vagy oszlopszámot véletlenszerűen
+   generáljuk). Az összeget a sor vagy oszlop utolsó elemében tároljuk. Mikor egy számot felhasználtunk az összeg kiszámításánál lenullázzuk azt,
+   elkerülve így azt, hogy kétszer is összeszámoljuk. Számoljuk ki M[n,n]-ben a mátrix elemeinek összegét több ilyen program párhuzamos indításával.
+   Azt a részt az állományból, amit a program az összegszámolásnál használ mindig zárolni kell. A folyamatok akkor állnak le, amikor kiszámoltuk a
+   végső összeget. */
+
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -29,9 +38,15 @@ int done(char* filename) {
 }
 
 int main(int argc, char **argv) {
-	int fd, n, i, j, x, k, sum;
+	int fd, n, i, x, k, sum;
+	FILE* fout;
 	struct flock lockS;
 	srand(time(NULL));
+
+	if (argc < 2) {
+		printf("Please give input filename as first parameter.\n");
+		exit(1);
+	}
 
 	if ((fd = open(argv[1], O_RDWR, 0644)) < 0) {
 		fprintf(stderr, "%d: error opening file %s\n", getpid(), argv[1]);
@@ -147,79 +162,39 @@ int main(int argc, char **argv) {
 			}
 			printf("%d: unlocked column %d\n", getpid(), k);
 		}
-		//getchar();
 	}
-	printf("left while\n");
 
-/*
-	k = atoi(argv[2]);
+	if ((fout = fopen("output.dat", "w")) < 0) {
+		perror("error opening output file\n");
+		exit(1);
+	}
 
-	// lock column
-	memset(&lockS, 0, sizeof(struct flock));
-	lockS.l_type = F_WRLCK;
-	lockS.l_whence = SEEK_CUR;
+	lockS.l_type = F_RDLCK;
 	lockS.l_len = sizeof(int);
-	lockS.l_start = 0;
-	for (i = 0; i < n; i++) {
-		lseek(fd, sizeof(int) + i * n * sizeof(int) + k * sizeof(int), SEEK_SET);
-		if (fcntl(fd, F_SETLKW, &lockS) < 0) {
-			fprintf(stderr, "%d: error when trying to lock\n", getpid());
-			exit(1);
-		}
+	lseek(fd, n * n * sizeof(int), SEEK_SET);
+	if (fcntl(fd, F_SETLK, &lockS) < 0) {
+		fprintf(stderr, "%d: error when trying to lock\n", getpid());
+		exit(1);
 	}
-	printf("%d: locked the column %d\n", getpid(), k);
-	//sleep(10);
-
-        for (i = 0; i < n; i++) {
-                lseek(fd, sizeof(int) + i * n * sizeof(int) + k * sizeof(int), SEEK_SET);
-                if (read(fd, &x, sizeof(x)) < 0) {
-                        fprintf(stderr, "%d: error reading from fd\n", getpid());
-                        exit(1);
-                }
-		sum += x;
-		x = 0;
-		lseek(fd, (-1) * sizeof(int), SEEK_CUR);
-		if (i == n - 1) {
-			if (write(fd, &sum, sizeof(sum)) < 0) {
-				fprintf(stderr, "%d: error writing to fd\n", getpid());
-				exit(1);
-			}
-		}
-		else {
-			if (write(fd, &x, sizeof(x)) < 0) {
-                                fprintf(stderr, "%d: error writing to fd\n", getpid());
-                                exit(1);
-                        }
-		}
-        }
-
-	printf("%d: wrote the column\n", getpid());
-	//sleep(5);
-
-
-	printf("%d going to read col k=%d from the file\n", getpid(), k+1);
-        for (i = 0; i < n; i++) {
-                lseek(fd, sizeof(int) + i * n * sizeof(int) + k * sizeof(int), SEEK_SET);
-                if (read(fd, &x, sizeof(x)) < 0) {
-                        fprintf(stderr, "%d: error reading from fd\n", getpid());
-                        break;
-                }
-                printf("%d ", x);
-        }
-        printf("\n");
+	lseek(fd, n * n * sizeof(int), SEEK_SET);
+	if (read(fd, &x, sizeof(x)) < 0) {
+		fprintf(stderr, "%d: error reading from fd\n", getpid());
+		exit(1);
+	}
 
 	lockS.l_type = F_UNLCK;
-	printf("%d going to free the column\n", getpid());
-	for (i = 0; i < n; i++) {
-                lseek(fd, sizeof(int) + i * n * sizeof(int) + k * sizeof(int), SEEK_SET);
-                if (fcntl(fd, F_SETLKW, &lockS) < 0) {
-                        fprintf(stderr, "%d: error when trying to unlock\n", getpid());
-                        exit(1);
-                }
+	lseek(fd, n * n * sizeof(int), SEEK_SET);
+	if (fcntl(fd, F_SETLK, &lockS) < 0) {
+                fprintf(stderr, "%d: error when trying to unlock\n", getpid());
+                exit(1);
         }
-        printf("%d: unlocked the column\n", getpid());
-        //sleep(5);
-*/
+	fprintf(fout, "%d", x);
+	if ((fclose(fout)) < 0) {
+		fprintf(stderr, "%d: error when trying to close output file\n", getpid());
+                exit(1);
+        }
+
+	printf("%d ended, result is %d\n", getpid(), x);
 	close(fd);
 	return 0;
 }
