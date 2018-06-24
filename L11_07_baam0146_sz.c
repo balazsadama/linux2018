@@ -6,7 +6,7 @@
 #include "header.h"
 
 int main(void) {
-	int szf, klf;
+	int szf, klf, opts;
 	char filename[MAXLEN];
 	pid_t fk;
 
@@ -15,18 +15,31 @@ int main(void) {
 		exit(1);
 	}
 
-	if ((szf = open(SZFIFONAME, O_RDONLY)) < 0) {
+	opts = O_RDONLY;
+	opts &= ~O_NONBLOCK;
+	if ((szf = open(SZFIFONAME, opts)) < 0) {
 		perror("error opening szfifo\n");
+		unlink(SZFIFONAME);
 		exit(1);
 	}
 
 	while (1) {
 		if (read(szf, filename, MAXLEN) > 0) {
+			opts = O_WRONLY;
+                        opts &= ~O_NONBLOCK;
 			if (strcmp(filename, "exit") == 0) {
 				printf("%d: server received 'exit' message\n", getpid());
+
+				if ((klf = open(KLFIFONAME, opts)) < 0) {
+                                        perror("error opening klfifo\n");
+                                        exit(1);
+                                }
+
+                                write(klf, "server succesfully shut down", MAXLEN);
+                                close(klf);
+
 				close(szf);
 				unlink(SZFIFONAME);
-				// ide asszem kell egy wait(NULL);
 				exit(0);
 			}
 
@@ -49,8 +62,9 @@ int main(void) {
 				printf("%d: received \"%s\", sent back \"%s\"\n", getpid(), filename, cmd);
 				
 				
-				if ((klf = open(KLFIFONAME, O_WRONLY)) < 0) {
+				if ((klf = open(KLFIFONAME, opts)) < 0) {
 					perror("error opening klfifo\n");
+					unlink(SZFIFONAME);
 					exit(1);
 				}
 
@@ -60,46 +74,14 @@ int main(void) {
 				exit(0);
 			}
 		}
-		else {
-			perror("error reading from server fifo\n");
-			exit(1);
-		}
+		//else {
+		//	perror("error reading from server fifo\n");
+		//	exit(1);
+		//}
 	}
 
 	close(szf);
 	unlink(SZFIFONAME);
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/*
-	FILE* testing;
-	char res[1024], cmd[1024];
-
-	strcpy(cmd, "./script.sh ");
-	strcat(cmd, "\"hellooo gorgeous\"");
-	testing = popen(cmd, "r");
-
-	fgets(res, 1024, testing);
-	printf("%s\n", res);
-
-	pclose(testing);
-	*/
 
 	return 0;
 } 
